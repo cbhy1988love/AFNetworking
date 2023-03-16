@@ -252,7 +252,10 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
         case AFSSLPinningModeCertificate: {
             NSMutableArray *pinnedCertificates = [NSMutableArray array];
             for (NSData *certificateData in self.pinnedCertificates) {
-                [pinnedCertificates addObject:(__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData)];
+                id obj = (__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData);
+                if (obj != nil && obj != NULL) {
+                    [pinnedCertificates addObject:obj];
+                }
             }
             SecTrustSetAnchorCertificates(serverTrust, (__bridge CFArrayRef)pinnedCertificates);
 
